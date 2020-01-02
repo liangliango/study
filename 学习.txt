@@ -1,0 +1,115 @@
+public static Options<DpQuerystudyaccountOut> dpaStudyQuery( final DpQuerystudyaccountIn cplIn){
+		bizlog.method(" DpAcctInterestQuery.studySelInfo begin >>>>>>>>>>>>>>>>");
+		bizlog.debug("cplIn=[%s]", cplIn);
+		//非空校验
+		BizUtil.fieldNotNull(cplIn.getAcct_no(),ApBaseDict.A.acct_no.getId(),ApBaseDict.A.acct_no.getLongName());
+		BizUtil.fieldNotNull(cplIn.getAcct_type(),DpBaseDict.A.acct_type.getId(),DpBaseDict.A.acct_type.getLongName());
+		BizUtil.fieldNotNull(cplIn.getData_version(),ApBaseDict.A.data_version.getId(),ApBaseDict.A.data_version.getLongName());
+		BizUtil.fieldNotNull(cplIn.getOperater_ind(),ApBaseDict.A.operater_ind.getId(),ApBaseDict.A.operater_ind.getLongName());
+		//操作码判断
+//		if(cplIn.getOperater_ind() == E_DATAOPERATE.ADD){
+//			
+//			Options<DpQuerystudyaccountOut> info = (Options<DpQuerystudyaccountOut>) SqlDpAcctQueryDao.selAcctInfo(cplIn.getAcct_no(),cplIn.getAcct_type(), false);
+//			return info;
+//			
+//		}
+		Options<DpQuerystudyaccountOut> info = (Options<DpQuerystudyaccountOut>) SqlDpAcctQueryDao.selAcctInfo(cplIn.getAcct_no(),cplIn.getAcct_type(), false);
+		return info;
+		//else if(cplIn.getOperater_ind() == E_DATAOPERATE.DELETE){
+//			
+//		}else{
+//			
+//		}
+		
+		
+		//return null;
+	}
+}
+List<DpQuerystudyaccountOut> info = SqlDpAcctQueryDao.selAcctInfo(cplIn.getAcct_no(),cplIn.getAcct_type(), false);
+		
+		Options<DpQuerystudyaccountOut> cplOut = new DefaultOptions<DpQuerystudyaccountOut>();
+		
+		cplOut.addAll(info);
+
+
+if(info.size() !=0){
+		throw DpErr.Dp.E0021(cplIn.getAcct_no());
+		}
+
+
+
+if(info.size() !=0){
+
+
+
+
+
+
+
+
+bizlog.method(" DpSmartDepositAmt.qryPayInstInfoList begin >>>>>>>>>>>>>>>>>>>");
+		bizlog.debug("cplIn=[%s]", cplIn);
+		
+		//非空校验
+		BizUtil.fieldNotNull(cplIn.getAcct_no(), ApBaseDict.A.acct_no.getId(), ApBaseDict.A.acct_no.getLongName());
+		BizUtil.fieldNotNull(cplIn.getFiche_no(), DpBaseDict.A.fiche_no.getId(), DpBaseDict.A.fiche_no.getLongName());
+		BizUtil.fieldNotNull(cplIn.getPay_inst_date(), DpBaseDict.A.pay_inst_date.getId(), DpBaseDict.A.pay_inst_date.getLongName());
+		// 定位子账号信息
+		DpAcctAccessIn acctAccessIn = BizUtil.getInstance(DpAcctAccessIn.class);
+
+		acctAccessIn.setAcct_no(cplIn.getAcct_no());
+		acctAccessIn.setAcct_type(cplIn.getAcct_type());
+		
+		// 获取存款子账户信息
+		DpAcctAccessOut acctAccessOut = DpToolsApi.locateSingleSubAcct(acctAccessIn);
+		DpaSubAccount subAcctInfo = DpaSubAccountDao.selectOne_odb1(acctAccessOut.getAcct_no(), acctAccessOut.getSub_acct_no(), true);
+
+		// 获取公共运行期变量
+		RunEnvs runEnvs = BizUtil.getTrxRunEnvs();
+		String orgId = runEnvs.getBusi_org_id();// 取得法人代码
+		
+		Page<DpAcctPayInstRecord> cplSubOut = SqlDpInterestDao.selAcctPayInstInfo(orgId, subAcctInfo.getAcct_no(), subAcctInfo.getSub_acct_no(), cplIn.getPay_inst_date(),
+				cplIn.getPay_inst_date(), runEnvs.getPage_start(), runEnvs.getPage_size(), runEnvs.getTotal_count(), false);
+		
+		// 智能卡片列表输出
+		Options<DpTimePayInterInfoOutList> cplOut = new DefaultOptions<DpTimePayInterInfoOutList>();
+		
+		if(CommUtil.isNotNull(cplSubOut.getRecords())) {
+			cplOut.setInterest(cplSubOut.getRecords().get(0).getInterest()); // 利息
+			cplOut.setInterest_tax(cplSubOut.getRecords().get(0).getInterest_tax()); // 利息税
+		Page<DpTimePayInterInfoOut> payInst = SqlDpTimeSlipDao.selPayInstList(acctAccessOut.getAcct_no(),acctAccessOut.getAcct_type(), cplIn.getFiche_no(),cplIn.getPay_inst_date(), orgId, runEnvs.getPage_start(),
+				runEnvs.getPage_size(), runEnvs.getTotal_count(), false);
+		
+		runEnvs.setTotal_count(payInst.getRecordCount());
+		
+		List<DpTimePayInterInfoOut> accruedIntList = payInst.getRecords();
+		cplOut.addAll((Collection<? extends DpTimePayInterInfoOutList>) accruedIntList);
+		
+		}
+		
+		
+		
+		
+		
+		
+		return cplOut;
+
+
+
+
+强制提交版本号
+git push origin master –force
+获取远程库与本地同步合并（如果远程库不为空必须做这一步，否则后面的提交会失败）
+git pull --rebase origin master
+
+
+
+
+
+
+
+
+
+
+
+
