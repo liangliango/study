@@ -1,0 +1,87 @@
+"form": {
+            "initRequest": "${{params}}" 初始化页面
+        },
+"toolbar": {
+            "btns": [
+                {
+                    "type": "add",
+                    "target": "dialog",
+                    "label": "新增",
+                    "toRequest": {
+                        "method": "GET",
+                        "url": "/views/aplt/sysManager/ruleEngine/rule_detail_add.json"
+                    },
+                    "props": {
+                        "width": "85%",
+                        "title": "新增场景规则"
+                    }
+                }
+            ]
+        },
+
+
+
+
+ "pagination": {
+                "show": true
+            } 设置每页显示的记录数
+
+
+
+
+ "form":{
+            "isInitSearch": true,可选
+            "foldLineNumber": 3, 可选
+
+
+
+
+"label": "操作",
+                    "fixed": "right",
+                    "btns": [
+                        {
+                            "type": "edit",
+                            "label": "详情",
+                            "toRequest": {   页面之间跳转
+                                "url": "/views/dp/inquery/sub_account_inquery/sub_account_form.json",
+                                "method": "POST"
+                            }
+                        }
+                    ]
+
+
+
+ "label": "操作",
+                    "fixed": "left",
+                    "btns": [
+                        {
+                            "type": "bringback",  点击就会选中填上个页面的值
+                            "label": "选择"
+                        }
+                    ]
+
+
+
+
+type/control：       string   无法输入
+	dataTimePicker  日期格式 yyyy-MM-dd
+	select 
+	text  可输入
+	remoteSelect
+
+
+
+"datagrid": {
+            "isInitSearch": false,
+            "doRequest": { 发送请求
+                "url": "/SUMP/call/RPCCall",
+                "method": "POST",
+                "params": {
+                    "servicecode": "317180"
+                }
+            },
+            "thead": [
+                {
+                    "type": "index"
+                },
+                {
